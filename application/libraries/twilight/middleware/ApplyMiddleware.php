@@ -13,5 +13,7 @@ class ApplyMiddleware {
 		Route::is('welcome')->apply('test.middleware');
 
 		Route::is('welcome/index')->apply(['test.middleware', 'my.middleware']);
+
+		Route::segment(1, 'welcome')->apply(['my.middleware']);
 	}
 }

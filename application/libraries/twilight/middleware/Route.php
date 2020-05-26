@@ -18,7 +18,20 @@ class Route {
 	public static function is(string $route) : self
 	{
 		$self = new self();
-		if(! $self->routeMatch && $self->CI->uri->uri_string() === $route) {
+		if($self->CI->uri->uri_string() === $route) {
+			$self->routeMatch = TRUE;
+		}
+
+		return $self;
+	}
+
+	/**
+	 * find segment match
+	 */
+	public static function segment(int $n, string $segment) : self
+	{
+		$self = new self();
+		if($self->CI->uri->segment($n) === $segment) {
 			$self->routeMatch = TRUE;
 		}
 
