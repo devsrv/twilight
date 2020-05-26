@@ -37,7 +37,12 @@ class MiddlewareProvider {
 	private function loadMiddlewares() : void
 	{
 		foreach($this->middlewares as $name => $middlewareFile) {
-			$this->load($middlewareFile);
+			try {
+				$this->load($middlewareFile);
+			} catch (\Exception $e) {
+				show_error($e->getMessage());
+			}
+			
 		}
 	}
 
@@ -58,12 +63,12 @@ class MiddlewareProvider {
 
             if(!$middlewareInstance instanceof MiddlewareInterface)
             {
-                show_error('Your middleware MUST implement the "MiddlewareInterface" interface');
+				throw new Exception('Your middleware MUST implement the "MiddlewareInterface" interface');
 			}
 			
 			return TRUE;
-        }
-
-        show_error('Unable to find <strong>' . $middleware .'.php</strong> in your application/twilight/middleware folder');
+		}
+		
+		throw new Exception('Unable to find middleware ' . $middleware .'.php');
     }
 }

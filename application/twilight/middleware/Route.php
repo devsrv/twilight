@@ -34,14 +34,34 @@ class Route {
 		{
 			if(is_array($middleware)) {
 				foreach($middleware as $key) {
-					$class = $this->middlewares[$key];
-					$class::handle();
+					try {
+						$this->run($key);
+					} catch (\Exception $e) {
+						show_error($e->getMessage());
+					}
+					
 				}
 			}
 			else {
-				$class = $this->middlewares[$middleware];
-				$class::handle();
+				try {
+					$this->run($middleware);
+				} catch (\Exception $e) {
+					show_error($e->getMessage());
+				}
 			}
 		}
+	}
+
+	/**
+	 * execute middleware by it's registered name
+	 */
+	private function run(string $middlewareKey) : void
+	{
+		if(! array_key_exists($middlewareKey, $this->middlewares)) {
+			throw new Exception('middleware name not registered, please check Kernel.php file');
+		}
+
+		$middlewareClass = $this->middlewares[$middlewareKey];
+		$middlewareClass::handle();
 	}
 }

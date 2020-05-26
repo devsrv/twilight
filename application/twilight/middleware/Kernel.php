@@ -38,7 +38,7 @@ class Kernel {
 		'my.middleware' => 'MyMiddleware',
 	];
 	
-    public static function getRegisteredMiddlewares() {
+    public static function getRegisteredMiddlewares() : array {
 		return self::$routeMiddleware;
 	}
 }
