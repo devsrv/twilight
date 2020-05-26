@@ -34,8 +34,8 @@ class Kernel {
      * @var array
      */
     private static $routeMiddleware = [
-		'test.middleware' => 'TestMiddleware',
-		'my.middleware' => 'MyMiddleware',
+		'test.middleware' => 'middlewares/test/TestMiddleware',
+		'my.middleware' => 'middlewares/MyMiddleware',
 	];
 	
     public static function getRegisteredMiddlewares() : array {

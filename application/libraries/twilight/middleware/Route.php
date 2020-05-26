@@ -61,7 +61,8 @@ class Route {
 			throw new Exception('middleware name not registered, please check Kernel.php file');
 		}
 
-		$middlewareClass = $this->middlewares[$middlewareKey];
+		$middlewareClassParts = explode('/', $this->middlewares[$middlewareKey]);
+		$middlewareClass = end($middlewareClassParts);
 		$middlewareClass::handle();
 	}
 }

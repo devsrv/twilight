@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once APPPATH.'/twilight/middleware/Kernel.php';
-require_once APPPATH.'/twilight/middleware/ApplyMiddleware.php';
-require_once APPPATH.'/twilight/middleware/MiddlewareInterface.php';
+require_once APPPATH.'/libraries/twilight/middleware/Kernel.php';
+require_once APPPATH.'/libraries/twilight/middleware/ApplyMiddleware.php';
+require_once APPPATH.'/libraries/twilight/middleware/MiddlewareInterface.php';
 
 /**
  * Middleware support class
@@ -53,19 +53,21 @@ class MiddlewareProvider {
      */
     public static function load(String $middleware) : ? bool
     {
-        $target = APPPATH . '/twilight/middleware/' . $middleware . '.php';
+		$target = APPPATH . '/' . $middleware . '.php';
 
         if( file_exists($target))
         {
-            require_once($target);
+			require_once($target);
 
-            $middlewareInstance = new $middleware();
+			$middlewareClassParts = explode('/', $middleware);
+			$middlewareClass = end($middlewareClassParts);
+            $middlewareInstance = new $middlewareClass();
 
             if(!$middlewareInstance instanceof MiddlewareInterface)
             {
 				throw new Exception('Your middleware MUST implement the "MiddlewareInterface" interface');
 			}
-			
+
 			return TRUE;
 		}
 		

@@ -16,6 +16,6 @@ $hook['post_controller_constructor'] = [
 	'class'    => 'MiddlewareProvider',
 	'function' => 'Register',
 	'filename' => 'MiddlewareProvider.php',
-	'filepath' => 'twilight/hooks',
+	'filepath' => 'libraries/twilight/hooks',
 	'params'   => NULL
 ];
