@@ -17,24 +17,43 @@ class Middleware {
 
 	/**
 	 * resolve middleware class by registered key from kernal file
-	 * 
-	 * @return application\libraries\twilight\middleware\MiddlewareInterface callable instance
 	 */
-	private function resolve(string $key) : MiddlewareInterface
+	private function resolve(string $key) : void
 	{
-		if(! array_key_exists($key, $this->middlewares)) {
+		if(strpos($key, ':')) {
+			[$middlewareKey, $params] = explode(':', $key);
+		}
+		else {
+			$middlewareKey = $key;
+			$params = NULL;
+		}
+
+		if(! array_key_exists($middlewareKey, $this->middlewares)) {
 			throw new Exception('middleware name not registered, please check middleware.php config file');
 		}
 
-		$middlewareClassParts = explode('/', $this->middlewares[$key]);
+		$middlewareClassParts = explode('/', $this->middlewares[$middlewareKey]);
 		$middlewareClass = end($middlewareClassParts);
-		return new $middlewareClass;
+		$callable = new $middlewareClass;
+
+		if(is_callable($callable)) {
+			if($params !== NULL) {
+				call_user_func_array($callable, explode(',', $params));
+			}
+			else {
+				$callable();
+			}
+		}
+		else {
+			throw new Exception('middleware not executable');
+		}
+		
 	}
 
 	/**
 	 * execute user defined middleware(s) for a middleware route match
 	 */
-	public static function execMiddleware($middleware)
+	public static function execMiddleware($middleware): void
 	{
 		if(is_array($middleware)) {
 			foreach($middleware as $key) {
@@ -49,11 +68,10 @@ class Middleware {
 	/**
 	 * call the middleware __invoke
 	 */
-	private function run(string $middlewareKey)
+	private function run(string $middlewareKey): void
 	{
 		try {
-			$callable = $this->resolve($middlewareKey);
-			$callable();
+			$this->resolve($middlewareKey);
 
 		} catch (\Exception $e) {
 			show_error($e->getMessage());

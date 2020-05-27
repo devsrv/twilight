@@ -56,9 +56,9 @@ class MiddlewareProvider extends MiddlewareResolver {
 			$middlewareClass = end($middlewareClassParts);
             $middlewareInstance = new $middlewareClass();
 
-            if(!$middlewareInstance instanceof MiddlewareInterface)
+            if(! method_exists($middlewareInstance, '__invoke'))
             {
-				throw new Exception('Your middleware MUST implement the "MiddlewareInterface" interface');
+				throw new Exception('Your middleware MUST contain the "__invoke" method');
 			}
 
 			return TRUE;

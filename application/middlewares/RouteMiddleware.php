@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 // Route::is('')->apply('test.middleware');
-Route::match('welcome/(:string)/(:num)')->apply('my.middleware');
+Route::match('welcome/(:string)/(:num)')->apply('test.middleware:rav');
 
 // Route::is('welcome')->apply('test.middleware');
 
