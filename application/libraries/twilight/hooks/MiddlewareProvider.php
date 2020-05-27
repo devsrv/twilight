@@ -8,18 +8,10 @@ spl_autoload_register(fn ($class) => require_once APPPATH.'/libraries/twilight/m
  *
  * @author Sourav R <developer.srv1@gmail.com>
  */
-class MiddlewareProvider {
-	protected $CI;
-	private $middlewares = [];
-
+class MiddlewareProvider extends MiddlewareResolver {
 	public function __construct()
 	{
-		$this->CI =& get_instance();
-
-		$this->CI->config->load('middleware', TRUE);
-
-		$middleware_config = $this->CI->config->item('middleware');
-		$this->middlewares = $middleware_config['alias'];
+		parent::__construct();
 
 		$this->loadMiddlewares();
 	}
@@ -37,7 +29,7 @@ class MiddlewareProvider {
 	 */
 	private function loadMiddlewares() : void
 	{
-		foreach($this->middlewares as $name => $middlewareFile) {
+		foreach(parent::$middlewares as $name => $middlewareFile) {
 			try {
 				$this->load($middlewareFile);
 			} catch (\Exception $e) {
