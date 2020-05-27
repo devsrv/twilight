@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class TestMiddleware implements MiddlewareInterface {
-	public static function handle()
+	public function __invoke()
 	{
 		echo 'hello TestMiddleware <br/>';
 	}

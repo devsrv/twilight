@@ -8,5 +8,5 @@ interface MiddlewareInterface
      * 
      * @return mixed
      */
-    public static function handle();
+    public function __invoke();
 }
