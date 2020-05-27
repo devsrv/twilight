@@ -2,11 +2,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Middleware {
+	protected $CI;
 	private array $middlewares = [];
 
 	public function __construct()
 	{
-		$this->middlewares = Kernel::getRegisteredMiddlewares();
+		$this->CI =& get_instance();
+
+		$this->CI->config->load('middleware', TRUE);
+
+		$this->middlewares = $this->CI->config->item('middleware');
 	}
 
 	/**
@@ -17,7 +22,7 @@ class Middleware {
 	private function resolve(string $key) : MiddlewareInterface
 	{
 		if(! array_key_exists($key, $this->middlewares)) {
-			throw new Exception('middleware name not registered, please check Kernel.php file');
+			throw new Exception('middleware name not registered, please check middleware.php config file');
 		}
 
 		$middlewareClassParts = explode('/', $this->middlewares[$key]);

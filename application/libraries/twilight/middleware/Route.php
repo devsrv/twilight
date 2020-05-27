@@ -3,13 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Route {
 	protected $CI;
-	private array $middlewares = [];
 	private bool $routeMatch = FALSE;
 
 	public function __construct()
 	{
 		$this->CI =& get_instance();
-		$this->middlewares = Kernel::getRegisteredMiddlewares();
 	}
 
 	/**

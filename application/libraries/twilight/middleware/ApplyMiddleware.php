@@ -10,10 +10,6 @@ class ApplyMiddleware {
 	 */
 	public static function register()
 	{
-		Route::is('welcome')->apply('test.middleware');
-
-		Route::is('welcome/index')->apply(['test.middleware', 'my.middleware']);
-
-		Route::segment(1, 'welcome')->apply(['my.middleware']);
+		require_once 'BindRouteMiddleware.php';
 	}
 }

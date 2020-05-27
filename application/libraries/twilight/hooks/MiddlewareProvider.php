@@ -16,7 +16,9 @@ class MiddlewareProvider {
 	{
 		$this->CI =& get_instance();
 
-		$this->middlewares = Kernel::getRegisteredMiddlewares();
+		$this->CI->config->load('middleware', TRUE);
+
+		$this->middlewares = $this->CI->config->item('middleware');
 
 		$this->loadMiddlewares();
 	}
