@@ -11,7 +11,8 @@ class Middleware {
 
 		$this->CI->config->load('middleware', TRUE);
 
-		$this->middlewares = $this->CI->config->item('middleware');
+		$middleware_config = $this->CI->config->item('middleware');
+		$this->middlewares = $middleware_config['alias'];
 	}
 
 	/**
