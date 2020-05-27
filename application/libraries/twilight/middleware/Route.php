@@ -45,37 +45,7 @@ class Route {
 	{
 		if($this->routeMatch === TRUE)
 		{
-			if(is_array($middleware)) {
-				foreach($middleware as $key) {
-					try {
-						$this->run($key);
-					} catch (\Exception $e) {
-						show_error($e->getMessage());
-					}
-					
-				}
-			}
-			else {
-				try {
-					$this->run($middleware);
-				} catch (\Exception $e) {
-					show_error($e->getMessage());
-				}
-			}
+			Middleware::execMiddleware($middleware);
 		}
-	}
-
-	/**
-	 * execute middleware by it's registered name
-	 */
-	private function run(string $middlewareKey) : void
-	{
-		if(! array_key_exists($middlewareKey, $this->middlewares)) {
-			throw new Exception('middleware name not registered, please check Kernel.php file');
-		}
-
-		$middlewareClassParts = explode('/', $this->middlewares[$middlewareKey]);
-		$middlewareClass = end($middlewareClassParts);
-		$middlewareClass::handle();
 	}
 }
