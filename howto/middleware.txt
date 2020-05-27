@@ -1,0 +1,45 @@
+in application/config/hooks -
+
+$hook['post_controller_constructor'] = [
+	'class'    => 'MiddlewareProvider',
+	'function' => 'Register',
+	'filename' => 'MiddlewareProvider.php',
+	'filepath' => 'libraries/twilight/hooks',
+	'params'   => NULL
+];
+
+
+
+place twilight middleware files ->
+
+application\libraries\twilight\middleware
+application\libraries\twilight\hooks\MiddlewareProvider.php
+
+
+
+config/middleware.php -> 
+
+$config['__config']['middleware_map_file'] = 'pathto/RouteMiddleware';
+$config['alias']['middleware.name'] = 'your/path/MiddlewareClass';
+.
+.
+
+MiddlewareClass must consist __invoke
+
+
+
+
+RouteMiddleware -> 
+
+
+Route::match('(:string)')->apply(['test.middleware', 'my.middleware:sourav, rakshit']);		//global middleware
+
+Route::match('welcome/(:string)/(:num)')->apply('test.middleware');				// regex support
+
+Route::is('welcome/index')->apply(['test.middleware', 'my.middleware']);			// exact string match
+
+Route::segment(1, 'welcome')->apply('test.middleware');						// where segment matches
+
+
+
+*ORDER MATTERS
