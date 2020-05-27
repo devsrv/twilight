@@ -1,10 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once APPPATH.'/libraries/twilight/middleware/Kernel.php';
-require_once APPPATH.'/libraries/twilight/middleware/ApplyMiddleware.php';
-require_once APPPATH.'/libraries/twilight/middleware/MiddlewareInterface.php';
-require_once APPPATH.'/libraries/twilight/middleware/Route.php';
+spl_autoload_register(function ($class) {
+    require_once APPPATH.'/libraries/twilight/middleware/' . $class . '.php';
+});
 
 /**
  * Middleware support class
