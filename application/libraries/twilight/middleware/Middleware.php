@@ -38,7 +38,7 @@ class Middleware {
 
 		if(is_callable($callable)) {
 			if($params !== NULL) {
-				call_user_func_array($callable, explode(',', $params));
+				call_user_func_array($callable, array_map('trim', explode(',', $params)));
 			}
 			else {
 				$callable();
