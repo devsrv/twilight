@@ -1,0 +1,26 @@
+config/migration - $config['migration_enabled'] = TRUE;
+
+copy libraries/twilight/migration to your project
+
+LOAD ------
+$this->load->library('twilight/migration/migrator');
+
+
+SUPPORTED METHODS -----
+
+$this->migrator->migrateAll();	//latest created migration file run ignoring $config['migration_version']
+
+$this->migrator->jumpTo("20200528124400");	// roll back changes or step forwards to specific version
+
+try {											// step forward / rollback
+	echo $this->migrator->step("forward", 1);
+} catch (\Exception $e) {
+	show_error($e->getMessage());
+}
+
+
+CREATE MIGRATION FILE--
+
+https://codeigniter.com/userguide3/libraries/migration.html#id2
+https://codeigniter.com/userguide3/database/forge.html
+
