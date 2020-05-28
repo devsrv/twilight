@@ -20,6 +20,13 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
+		$this->load->library('twilight/authenticator/auth');
+		$this->load->library('twilight/encryption/hash');
+
+
+		echo $this->hash->make('sourav') . '</br>';
+		var_dump($this->auth->attempt('developer.srv1@gmail.com', 'sourav'));
+
 		$this->load->view('welcome_message');
 	}
 }
