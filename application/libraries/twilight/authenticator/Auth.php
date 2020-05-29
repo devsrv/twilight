@@ -29,6 +29,7 @@ class Auth {
 		$this->CI->load->database("default");
 
 		$this->CI->load->library('twilight/encryption/hash');
+		$this->CI->load->library('twilight/middleware/middleware');
 
 		$this->CI->load->library('session');
 
@@ -47,6 +48,9 @@ class Auth {
 	 */
 	public function attempt(string $username, string $password, bool $remember = FALSE) : array
 	{
+		// allowed only if user not logged in
+		$this->CI->middleware->execMiddleware('guest');
+
 		$query = $this->CI->db->get_where($this->table, [$this->username => $username], 1);
 		if($query->num_rows() === 1) {
 			$user = $query->row();
@@ -80,6 +84,9 @@ class Auth {
 	 */
 	public function get(string $column)
 	{
+		// only if user is logged in currently
+		$this->CI->middleware->execMiddleware('auth');
+
 		$this->CI->db->select($column);
 		$this->CI->db->from($this->table);
 		$this->CI->db->where($this->id, $_SESSION['logged_in_uid']);
@@ -111,6 +118,9 @@ class Auth {
 	 */
 	public function logout()
 	{
+		// only if user is logged in currently
+		$this->CI->middleware->execMiddleware('auth');
+
 		$this->CI->session->unset_userdata(['logged_in', 'logged_in_uid']);
 		$this->CI->session->sess_destroy();
 
