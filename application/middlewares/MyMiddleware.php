@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class MyMiddleware {
-	public function __invoke($param1, $param2)
+class MyMiddleware implements MiddlewareInterface {
+	public function __invoke(...$params)
 	{
-		echo 'hello MyMiddleware - '.$param2.' <br/>';
+		echo 'hello MyMiddleware - '.$params[1].' <br/>';
 	}
 }

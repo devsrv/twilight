@@ -24,7 +24,7 @@ $config['alias']['middleware.name'] = 'your/path/MiddlewareClass';
 .
 .
 
-MiddlewareClass must consist __invoke
+MiddlewareClass must implement MiddlewareInterface
 
 
 
