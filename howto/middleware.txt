@@ -47,8 +47,8 @@ Route::segment(1, 'welcome')->apply('test.middleware');						// where segment ma
 
 
 comes with two built in middlewares -
-libraries/twilight/middleware/middlewares/ShouldAuth
-libraries/twilight/middleware/middlewares/Guest
+libraries/twilight/middleware/middlewares/ShouldAuth	-	auth
+libraries/twilight/middleware/middlewares/Guest			- 	guest
 
 feel free to copy them over to your middlewares dir & modify then set auth & guest key in config/middleware.php file
 these two are required by twilight auth system internally
@@ -58,3 +58,8 @@ use middleware in controller ->
 
 $this->load->library('twilight/middleware/middleware');
 $this->middleware->execMiddleware('guest');
+
+
+to customize where to redirect logged in & non logged in users, override these two properties in ShouldAuth & Guest middleware
+private static $redirectTo = '/dashboard';
+private static $redirectIFNotAuthenticated = '/login';
