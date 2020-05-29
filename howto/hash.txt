@@ -1,0 +1,9 @@
+Hash::make($pwd);
+
+Hash::match($pwd, $hash) : bool;
+
+copy & place config/encryption.php
+
+set algorithm - Supported: "bcrypt", "argon", "argon2id"
+
+set algorithm options
