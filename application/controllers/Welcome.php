@@ -3,6 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Welcome extends CI_Controller {
 
+	public function __construct() {
+		parent::__construct();
+
+		$this->load->library('twilight/authenticator/auth');
+		$this->load->library('twilight/encryption/hash');
+	}
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -20,13 +27,22 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->library('twilight/authenticator/auth');
-		$this->load->library('twilight/encryption/hash');
-
-
-		echo $this->hash->make('sourav') . '</br>';
-		var_dump($this->auth->attempt('developer.srv1@gmail.com', 'sourav'));
-
 		$this->load->view('welcome_message');
+	}
+
+	public function login() {
+		$this->auth->attempt('developer.srv1@gmail.com', 'sourav');
+	}
+
+	public function logout() {
+		$this->auth->logout();
+	}
+
+	public function dashboard() {
+		if($this->auth->check()) {
+			echo 'logged in <strong>'. $this->auth->get('name') .'</strong>';
+		} else {
+			echo 'not logged in';
+		}
 	}
 }
