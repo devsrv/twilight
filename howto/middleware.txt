@@ -52,3 +52,9 @@ libraries/twilight/middleware/middlewares/Guest
 
 feel free to copy them over to your middlewares dir & modify then set auth & guest key in config/middleware.php file
 these two are required by twilight auth system internally
+
+
+use middleware in controller ->
+
+$this->load->library('twilight/middleware/middleware');
+$this->middleware->execMiddleware('guest');
