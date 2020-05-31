@@ -16,6 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<div id="body">
 		<form action="/logout" method="post" id="logout-form">
+			<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
 			<input type="hidden" name="logout" />
 		</form>
 	</div>

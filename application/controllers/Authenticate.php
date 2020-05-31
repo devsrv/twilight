@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Authenticate extends CI_Controller {
+	private array $csrf;
 
 	public function __construct() {
 		parent::__construct();
@@ -9,6 +10,11 @@ class Authenticate extends CI_Controller {
 		$this->load->library('twilight/authenticator/auth');
 
 		$this->load->helper('url');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 	public function login() {
@@ -19,12 +25,12 @@ class Authenticate extends CI_Controller {
 			);
 
 			if($response['success'] === 1) redirect('/dashboard', 'refresh');
-			else $this->load->view('loginform', ['error' => 1]);
+			else $this->load->view('loginform', ['error' => 1, 'csrf' => $this->csrf]);
 
 			return;
 		}
 
-		$this->load->view('loginform', ['error' => 0]);
+		$this->load->view('loginform', ['error' => 0, 'csrf' => $this->csrf]);
 	}
 
 	public function logout() {
