@@ -67,9 +67,9 @@ return [
 ```
 
 
-## ⚗️ How to Use
+## ⚗️ Guide
 
-#### 🧰 Middleware
+### 🧰 Middleware
 
 > Middleware provide a convenient mechanism for filtering HTTP requests entering your application. 
 For example, Twilight includes two middlewares (auth, guest) that verifies the user of your application is authenticated. 
@@ -78,7 +78,7 @@ if the user is authenticated, the middleware will redirect the user to the dashb
 only allows to enter the http request if no user is currently logged in
 
 
-- **Write middleware**
+- ****Write Middleware****
 1. your middleware class must implement `MiddlewareInterface` which comes with Twilight & autoloaded for you no need to require / include the interface
 2. you can place your middleware in any directory you prefer but remember to register it in the `config/middleware.php` `alias` group
  ```php
@@ -90,7 +90,7 @@ $config['alias']['test.middleware'] = 'path/to/YourMiddleWareClass';
 $config['__config']['middleware_map_file'] = //set RouteMiddleware path
 ```
 
-- **Apply Middleware**
+- ****Apply Middleware****
 
 there are two ways to apply middleware -
 1. you can apply one or multiple middlewares to a specific route
@@ -118,7 +118,7 @@ $this->middleware->execMiddleware('guest');
 $this->middleware->execMiddleware(['my.middle', 'test.middle']);
 ```
 
-##### 📑 Note
+#### 📑 Note
 
 1. you can apply mittleple middlewares by using array  `->apply(['first', 'second'])`
 2. middlewares support parameter, just pass them when after `:` and for multiple param use comma,  like -
@@ -129,19 +129,19 @@ $this->middleware->execMiddleware(['member:gold']);
 ```
 
 
-#### 🛡️ Hashing
+### 🛡️ Hashing
 
 > The Twilight Hash library provides secure Bcrypt and Argon2 hashing for storing user passwords. Bcrypt is a great choice for hashing passwords because its "work factor" is adjustable, which means that the time it takes to generate a hash can be increased as hardware power increases.
 
 
-#### *✔ Configuration*
+###### ✔ CONFIGURATION
 
 the `config/encryption.php` file contains hashing configuration
 default algorithm is `bcrypt` Supported: `bcrypt`, `argon`, `argon2id`.
 you can additionally configure hash options too.
 
 
-##### *✔ Usage*
+###### ✔ USAGE & SUPPORTED METHODS
 
 load the library `$this->load->library('twilight/encryption/hash');` then use the below supported methods
 
@@ -151,13 +151,13 @@ load the library `$this->load->library('twilight/encryption/hash');` then use th
 |match|verify that a given plain-text string corresponds to a given hash| `$this->hash->match($pwd, $hash); //return bool`
 
 
-#### 🧪 Migration
+### 🧪 Migration
 
 > Migrations are a convenient way for you to alter your database in a structured and organized manner. You could edit fragments of SQL by hand but you would then be responsible for telling other developers that they need to go and run them. You would also have to keep track of which changes need to be run against the production machines next time you deploy.
 
 Twilight provides a migration library based on the Codeigniter migration class that allow you to `step forward`, `rollback`, `jump` and run all new migrations fluently
 
-###### ✔ USAGE
+###### ✔ USAGE & SUPPORTED METHODS
 
 1. create migration file. check official guide
 
@@ -166,10 +166,77 @@ Twilight provides a migration library based on the Codeigniter migration class t
 
 2. load library `$this->load->library('twilight/migration/migrator');` and use supported methods
 
-###### ✔ SUPPORTED METHODS
-
 | Method | Parameter | Description | Example |
 |-|:-:|:-:|-|
 |migrateAll|void|run all migrations that are not yet ran| `$this->migrator->migrateAll();`
 |jumpTo|jump to a specific migration version in the timeline, can be used to roll back changes or step forwards programmatically to specific versions|string $target_version| `$this->migrator->jumpTo("20200528124400");`
 |step|string **$direction** = "forward" or "back"; int **$step_number** |run all migrations that are not yet ran| `try { echo $this->migrator->step("forward", 1); } catch (\Exception $e) {show_error($e->getMessage());}`
+
+
+### 🧰 Authentication
+
+>Twilight makes implementing authentication very simple. In fact, almost everything is configured for you out of the box.
+
+there are 3 middleware classes comes packed with Twilight core - [`ShouldAuth.php`](https://github.com/devsrv/twilight/blob/master/application/libraries/twilight/middleware/middlewares/ShouldAuth.php), [`Guest.php`](https://github.com/devsrv/twilight/blob/master/application/libraries/twilight/middleware/middlewares/Guest.php), [`AuthSupport.php`](https://github.com/devsrv/twilight/blob/master/application/libraries/twilight/middleware/middlewares/Authsupport.php)
+these basically determines whether to allow logged in / guest users to certain routes / functionalities.
+you can check these middlewares are applied in the example RouteMiddleware.php map file, though internally the twilight Auth library uses these middlewars alongside with the route middleware definitions 
+
+###### ✔ DB COSIDERATION
+
+when initializing the auth library you can pass a $config array, here its structure -
+```php
+$config = [
+    'col' => [
+        'id' => '',
+        'username' => '',
+        'password' => '',
+        'remember' => '',
+    ],
+    'db' => [
+        'table' => ''
+    ]
+]
+
+$this->load->library('twilight/authenticator/auth', $config);
+```
+
+leaving the config parameter blank will set the below config by default
+
+```php
+$config = [
+    'col' => [
+        'id' => 'id',
+        'username' => 'email',
+        'password' => 'password',
+        'remember' => 'remember_token',
+    ],
+    'db' => [
+        'table' => 'users'
+    ]
+]
+```
+
+by this config you can specify the `id`, `username`, `password`, `remember token` columns of your table and also can specify the table name that hold the users
+
+*for easy start a migration for `users` table is available for you to freely use in your application - check [`20200528204100_create_users_table.php`](https://github.com/devsrv/twilight/blob/master/application/migrations/20200528204100_create_users_table.php)*
+
+a complete auth system is available, please check the [`Authenticate.php`](https://github.com/devsrv/twilight/blob/master/application/controllers/Authenticate.php), [`Dashboard.php`](https://github.com/devsrv/twilight/blob/master/application/controllers/Dashboard.php), [`routes.php`](https://github.com/devsrv/twilight/blob/master/application/config/routes.php) and [`middleware.php`](https://github.com/devsrv/twilight/blob/master/application/config/middleware.php)
+
+
+###### ✔ USAGE
+
+1. load library `$this->load->library('twilight/authenticator/auth', $config);` and use supported methods
+
+**it is highly recommended to check this example file [Authenticate.php](https://github.com/devsrv/twilight/blob/master/application/controllers/Authenticate.php) that shows usage of all the supported methods
+
+
+
+###### ✔ SUPPORTED METHODS
+
+| Method | Parameter | Return | Description | Example |
+|-|:-:|:-:|:-:|-|
+|viaRemember|void|array ['success', 'id', 'message']|check whether user can be logged in by the remember me cookie| `if($this->auth->viaRemember()) redirect('/dashboard', 'refresh');`
+|attempt|void|bool|attempt to authenticate user by `username`, `password`, `remember` | `$response = $this->auth->attempt($email, $password, null !== $this->input->post('remember'));`
+|logout|void|void|logout user & flush remember me token cookie| `$this->migrator->migrateAll();`
+|check|void|bool|whether user logged  in| `$this->auth->check()`
+|get|mixed|string|get any column data of the logged in user| `$this->auth->get('name');`
