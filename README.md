@@ -69,7 +69,7 @@ return [
 
 ## ⚗️ How to Use
 
-#### 🔧 Middleware
+#### 🧰 Middleware
 
 > Middleware provide a convenient mechanism for filtering HTTP requests entering your application. 
 For example, Twilight includes two middlewares (auth, guest) that verifies the user of your application is authenticated. 
@@ -129,167 +129,47 @@ $this->middleware->execMiddleware(['member:gold']);
 ```
 
 
+#### 🛡️ Hashing
+
+> The Twilight Hash library provides secure Bcrypt and Argon2 hashing for storing user passwords. Bcrypt is a great choice for hashing passwords because its "work factor" is adjustable, which means that the time it takes to generate a hash can be increased as hardware power increases.
 
 
+#### *✔ Configuration*
+
+the `config/encryption.php` file contains hashing configuration
+default algorithm is `bcrypt` Supported: `bcrypt`, `argon`, `argon2id`.
+you can additionally configure hash options too.
 
 
+##### *✔ Usage*
+
+load the library `$this->load->library('twilight/encryption/hash');` then use the below supported methods
+
+| Method | Description | Example |
+|-|:-:|-|
+|make|generates hashed string of a given value| `$this->hash->make($pwd);`
+|match|verify that a given plain-text string corresponds to a given hash| `$this->hash->match($pwd, $hash); //return bool`
 
 
+#### 🧪 Migration
 
+> Migrations are a convenient way for you to alter your database in a structured and organized manner. You could edit fragments of SQL by hand but you would then be responsible for telling other developers that they need to go and run them. You would also have to keep track of which changes need to be run against the production machines next time you deploy.
 
+Twilight provides a migration library based on the Codeigniter migration class that allow you to `step forward`, `rollback`, `jump` and run all new migrations fluently
 
+###### ✔ USAGE
 
+1. create migration file. check official guide
 
+[https://codeigniter.com/userguide3/libraries/migration.html#id2](https://codeigniter.com/userguide3/libraries/migration.html#id2)
+[https://codeigniter.com/userguide3/database/forge.html](https://codeigniter.com/userguide3/database/forge.html)
 
+2. load library `$this->load->library('twilight/migration/migrator');` and use supported methods
 
+###### ✔ SUPPORTED METHODS
 
-
-
-
-
-
-
-```bash
-composer require devsrv/laravel-session-out
-```
-
-> Laravel 5.5+ users: this step may be skipped, as we can auto-register the package with the framework.
-
-```php
-
-// Add the ServiceProvider to the providers array in
-// config/app.php
-
-'providers' => [
-    '...',
-    'devsrv\sessionout\sessionExpiredServiceProvider::class',
-];
-```
-
-You need to publish the `blade`, `js`, `css` and `config` files included in the package using the following artisan command:
-```bash
-php artisan vendor:publish --provider="devsrv\sessionout\sessionExpiredServiceProvider"
-```
-
-
-## ⚗️ Usage
-
-just include the blade file to all the blade views which are only available to authenticated users.
-
-```php
-@include('vendor.sessionout.notify')
-```
-
-> rather copying this line over & over to the views, extend your base blade view and include it there in the bottom
-
-
-
-## 🛠  Configuration
-
-#### ✔ The Config File
-
-publishing the vendor will create `config/expiredsession.php` file
-
-```php
-return [
-	// the number of seconds between ajax hits to check auth session
-    'gap_seconds' => 30,
-    
-    // whether using broadcasting feature to make the modal disappear faster
-    'avail_broadcasting' => false,
-```
-
-#### ✔ If you want to take advantage of broadcasting
-
-> ** if you are using `avail_broadcasting = true` i.e. want to use the Laravel Echo for faster output please follow the below steps
-
-1. setup [broadcasting](https://laravel.com/docs/master/broadcasting) for your app
-and start `usersession` queue worker
-```bash
-php artisan queue:work --queue=default,usersession
-```
-
-2. make sure to put the broadcasting client config `js` file above the `@include` line not below it, in your blade view.
-```php
-<script type="text/javascript" src="{{ asset('js/broadcasting.js') }}"></script>
-//some html between
-@include('vendor.sessionout.notify')
-```
-3. in `App\Providers\BroadcastServiceProvider` file in the `boot` method require the package's channel file, it contains private channel authentication
-```php
-require base_path('vendor/devsrv/laravel-session-out/src/routes/channels.php');
-```
-4. in all the places from where users are authenticated call `devsrv\sessionout\classes\AuthState::sessionAvailable()` .
-if you are using custom logic to login users then put the line inside your authentication method when login is successful. 
-> if you are using laravel's default authentication system then better choice will be to create a listener of the login event, Example :-
-```php
-// App\Providers\EventServiceProvider
-
-protected $listen = [
-        'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\SuccessfulLogin',
-        ],
-    ];
-```
-```php
-// App\Listeners\SuccessfulLogin
-
-use devsrv\sessionout\classes\AuthState;
-
-/**
-* Handle the event.
-*
-* @param  Login  $event
-* @return void
-*/
-public function handle(Login $user)
-{
-	AuthState::sessionAvailable();
-}
-```
-
-
-#### ✔ Update the modal design & contents
-
-The modal is created with pure `js` and `css` no framework has been used, so you can easily customize the modal contents by editing the `views/vendor/sessionout/modal.blade.php` & the design by editing `public/vendor/sessionout/css/session-modal.css`
-
-#### ✔ Advanced
-
-- 🔘 if you want to customize the `js` file which is responsible for checking auth session & modal display then modify the `public/vendor/sessionout/js/main.js` file but don't forget to compile it with webpack & place the compiled `js` as `public/vendor/sessionout/dist/js/main.js`
-
-- 🔘 **you may want to create a login form** in the modal, first create the html form in the `views/vendor/sessionout/modal.blade.php` then put the ajax code in `public/vendor/sessionout/js/main.js` & don't forget to compile as mentioned above,
-> after ajax success close the modal by calling the `closeSessionOutModal()` function
-
-
-## 🧐📑 Note
-
-#### ♻ When updating the package
-
-Remember to publish the `assets`, `views` and `config` after each update
-
-use `--force` tag after updating the package to publish the **updated latest** package `assets`, `views` and `config` 
-> but remember using _--force_ tag will replace all the publishable files
-
-```bash
-php artisan vendor:publish --provider="devsrv\sessionout\sessionExpiredServiceProvider" --force
-
-php artisan vendor:publish --provider="devsrv\sessionout\sessionExpiredServiceProvider" --tag=public --force
-```
-
-> when updating the package take backup of the `config/expiredsession.php` file & `public/vendor/sessionout`, `views/vendor/sessionout` directories as the files inside these dir. are configurable so if you modify the files then the updated published files will not contain the changes, though after publishing the `assets`, `views` and `config` you may again modify the files
-
-#### 🔧 After you tweak things
-
-Run this artisan command after changing the config file.
-```bash
-php artisan config:clear
-php artisan queue:restart // only when using broadcasting
-```
-
-## 👋🏼 Say Hi! 
-Let me know in [Twitter](https://twitter.com/srvrksh) | [Facebook](https://www.facebook.com/srvrksh) if you find this package useful 👍🏼
-
-
-## 🎀 License
-
-The MIT License (MIT). Please see [License File](LICENSE) for more information.
+| Method | Parameter | Description | Example |
+|-|:-:|:-:|-|
+|migrateAll|void|run all migrations that are not yet ran| `$this->migrator->migrateAll();`
+|jumpTo|jump to a specific migration version in the timeline, can be used to roll back changes or step forwards programmatically to specific versions|string $target_version| `$this->migrator->jumpTo("20200528124400");`
+|step|string **$direction** = "forward" or "back"; int **$step_number** |run all migrations that are not yet ran| `try { echo $this->migrator->step("forward", 1); } catch (\Exception $e) {show_error($e->getMessage());}`
