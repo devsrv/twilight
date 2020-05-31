@@ -18,10 +18,13 @@ class Authenticate extends CI_Controller {
 	}
 
 	public function login() {
+		if($this->auth->viaRemember()) redirect('/dashboard', 'refresh');
+
 		if($this->input->method(TRUE) === 'POST') {
 			$response = $this->auth->attempt(
 				$this->input->post('email'), 
-				$this->input->post('password')
+				$this->input->post('password'),
+				null !== $this->input->post('remember')
 			);
 
 			if($response['success'] === 1) redirect('/dashboard', 'refresh');

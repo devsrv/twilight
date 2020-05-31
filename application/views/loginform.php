@@ -21,6 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
 			<input type="text" name="email" value="developer.srv1@gmail.com" placeholder="Email-ID" />
 			<input type="password" name="password" value="sourav" />
+			<label><input type="checkbox" name="remember" checked="checked" /> Remember me</label>
 			<button type="submit">Login</button>
 		</form>
 	</div>
